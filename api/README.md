@@ -30,7 +30,9 @@ An example of a valid request is:
 
 Different processors may add other fields. Please refer to the
 specific processor for more details. Currently, the processors are
-`st`, and `st_triangle` that both use only those fields.
+`st`, and `st_triangle` that both use only those fields, and `st_triangle_ne`
+that is addition allows the user to set a `dictionary` field for
+terminology extraction.
 The server produces in the stdout (standard output) a different
 response according to the processor used, but it is always formatted
 as a single line JSON.
@@ -74,3 +76,13 @@ python api/simple_io_server_st.py $data_bin \
 
  - The server is single-thread and accepts only ONE request per time.
  - The server can serve only one model. To serve more models, start more servers.
+
+## Dependencies
+
+### ST Triangle with NE recognition
+
+The following python packages are needed:
+
+```bash
+pip install thefuzz text2num requests
+```

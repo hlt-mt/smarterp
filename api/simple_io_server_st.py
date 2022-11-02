@@ -56,10 +56,14 @@ def start_server(cfg: DictConfig):
     elif cfg.task.server_processor == "st":
         from api.st_processor import STProcessor
         processor = STProcessor(cfg)
+    elif cfg.task.server_processor == "st_triangle_ne":
+        from api.st_triangle_ne_processor import STTriangleNEProcessor
+        processor = STTriangleNEProcessor(cfg)
     else:
         logger.exception(f"Invalid --server-processor: {cfg.server_processor}.")
         sys.exit(-1)
 
+    sys.stdout.write("server started successfully\n")
     while True:
         logger.info("Waiting for input...")
         input_json = sys.stdin.readline()
@@ -86,7 +90,7 @@ def start_server(cfg: DictConfig):
 
 def cli_main():
     parser = options.get_generation_parser()
-    parser.add_argument("--server-processor", type=str, choices=["st", "st_triangle"])
+    parser.add_argument("--server-processor", type=str, choices=["st", "st_triangle", "st_triangle_ne"])
     args = options.parse_args_and_arch(parser)
     main(args)
 
