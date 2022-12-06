@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License
 import json
+import os
 import re
 import requests
 import string
@@ -210,6 +211,24 @@ def extract_nes(transcript, translation, slang, tlang, logger):
     return paired
 
 
+def extract_terms_from_source(transcript, translation, terms_dict, logger) -> List[Tuple[str, str]]:
+    transcript = REMOVE_NE_PATTERN.sub('', transcript)
+    transcript_lc = transcript.lower()
+    found = []
+    for entry in terms_dict:
+        s, ts = entry
+        if s in transcript_lc:
+            idx = transcript_lc.index(s)
+            end_of_term = len(re.split(r'\W+', transcript[idx + len(s):])[0])
+            start_of_term = len(re.split(r'\W+', transcript[:idx][::-1])[0])
+            term = transcript[idx - start_of_term:idx + len(s) + end_of_term]
+            if fuzz.WRatio(term, s) < 0.8:
+                continue
+            tgt_found = False
+            found.append((s, ts[0]))
+    return found
+
+
 def extract_terms(transcript, translation, terms_dict, logger) -> List[Tuple[str, str]]:
     transcript = REMOVE_NE_PATTERN.sub('', transcript)
     translation = REMOVE_NE_PATTERN.sub('', translation)
@@ -254,6 +273,7 @@ class STTriangleNEProcessor(STTriangleProcessor):
 
     def __init__(self, cfg):
         super().__init__(cfg)
+        self.extract_terms_from_transcript_only = int(os.getenv('EXTRACT_TERMS_FROM_TRANSCRIPT', 1)) == 1
         for lang in self.supported_langs:
             parser = text_to_num.lang.LANG[lang]
             for m in parser.MULTIPLIERS:
@@ -288,7 +308,8 @@ class STTriangleNEProcessor(STTriangleProcessor):
             self.logger)
         if request.dictionary is not None:
             terms_dict = self.load_dict(request.dictionary)
-            terms = extract_terms(
+            fn_extract_terms = extract_terms_from_source if self.extract_terms_from_transcript_only else extract_terms
+            terms = fn_extract_terms(
                 st_triangle_response.transcript,
                 st_triangle_response.translation,
                 terms_dict,
