@@ -68,6 +68,13 @@ def stopwords_by_lang(iso):
         return stopwords.french
 
 
+def clean_stopwords(text, lang):
+    for sw in stopwords_by_lang(lang):
+        if text.startswith(sw + ' '):
+            text = text[len(sw) + 1:].strip()
+    return text
+
+
 def extract_ne(text, srclang, tgtlang):
     kg_server_response = requests.post(
         LINKEDDATA_URL,
@@ -99,10 +106,7 @@ def extract_ne(text, srclang, tgtlang):
                 t["translation"][translate_langcode(tgtlang)]
                 for t in wikidata[ne[0]] if translate_langcode(tgtlang) in t["translation"]])
         else:
-            cleaned_ne = ne[0]
-            for sw in stopwords_by_lang(srclang):
-                if cleaned_ne.startswith(sw):
-                    cleaned_ne = cleaned_ne[len(sw)+1:].strip()
+            cleaned_ne = clean_stopwords(ne[0], srclang)
             if cleaned_ne in wikidata:
                 wiki_trans = flatten([
                     t["translation"][translate_langcode(tgtlang)]
@@ -224,7 +228,6 @@ def extract_terms_from_source(transcript, translation, terms_dict, logger) -> Li
             term = transcript[idx - start_of_term:idx + len(s) + end_of_term]
             if fuzz.WRatio(term, s) < 0.8:
                 continue
-            tgt_found = False
             found.append((s, ts[0]))
     return found
 
@@ -288,6 +291,16 @@ class STTriangleNEProcessor(STTriangleProcessor):
             for ne in nes
         ]
 
+    @staticmethod
+    def remove_stopwords(nes, slang, tlang):
+        for i in range(len(nes)):
+            if len(nes[i]) == 2:
+                new_ne = (clean_stopwords(nes[i][0], slang), clean_stopwords(nes[i][1], tlang))
+            else:
+                new_ne = (clean_stopwords(nes[i][0], slang), clean_stopwords(nes[i][1], tlang), nes[i][2])
+            nes[i] = new_ne
+        return nes
+
     def load_dict(self, dict_fn):
         if dict_fn not in self.LOADED_DICTS:
             new_dict = []
@@ -321,5 +334,8 @@ class STTriangleNEProcessor(STTriangleProcessor):
             st_triangle_response.score,
             st_triangle_response.translation,
             st_triangle_response.transcript,
-            self.ne_digit_converter(nes, request.src_lang, request.tgt_lang),
-            terms)
+            self.remove_stopwords(
+                self.ne_digit_converter(nes, request.src_lang, request.tgt_lang),
+                request.src_lang,
+                request.tgt_lang),
+            self.remove_stopwords(terms, request.src_lang, request.tgt_lang))
