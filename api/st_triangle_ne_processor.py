@@ -277,6 +277,7 @@ class STTriangleNEProcessor(STTriangleProcessor):
     def __init__(self, cfg):
         super().__init__(cfg)
         self.extract_terms_from_transcript_only = int(os.getenv('EXTRACT_TERMS_FROM_TRANSCRIPT', 1)) == 1
+        self.alpha2digit_conversion = int(os.getenv('CONVERT_ALPHA2DIGITS', 1)) == 1
         for lang in self.supported_langs:
             parser = text_to_num.lang.LANG[lang]
             for m in parser.MULTIPLIERS:
@@ -330,12 +331,12 @@ class STTriangleNEProcessor(STTriangleProcessor):
         else:
             terms = []
 
+        if self.alpha2digit_conversion:
+            nes = self.ne_digit_converter(nes, request.src_lang, request.tgt_lang)
+
         return STTriangleNEProcessorResponse(
             st_triangle_response.score,
             st_triangle_response.translation,
             st_triangle_response.transcript,
-            self.remove_stopwords(
-                self.ne_digit_converter(nes, request.src_lang, request.tgt_lang),
-                request.src_lang,
-                request.tgt_lang),
+            self.remove_stopwords(nes, request.src_lang, request.tgt_lang),
             self.remove_stopwords(terms, request.src_lang, request.tgt_lang))
