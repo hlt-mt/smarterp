@@ -28,7 +28,7 @@ from api.misc import stopwords
 
 REMOVE_NE_PATTERN = re.compile(r'</?[A-Z_]+>')
 NE_PATTERN = re.compile(r"<(.+)>([^<]+)</\1>")
-LINKEDDATA_URL = 'http://3.67.97.13/api/'
+LINKEDDATA_URL = f'http://{os.getenv("LINKEDDATA_IP", "3.121.98.219")}/api/'
 
 
 def translate_langcode(iso):
