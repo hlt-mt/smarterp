@@ -79,8 +79,7 @@ this means it is ready to accept connections and requests.
 
 ### API
 
-The API of the FBK ST demo component can be found in [this README](../websocket_server/README.md)
-
+The API of the FBK ST demo component can be found in [this README](https://gitlab.fbk.eu/mt/fbk-fairseq/-/blob/smarterp_release/websocket_server/README.md#api)
 
 ### Limitations
 

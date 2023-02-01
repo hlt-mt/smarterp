@@ -15,7 +15,7 @@ The integration and communication with the CAI tool is implemented with the serv
     direct ST systems.
 
 
-The full documentation regarding how to use server 1 can be found at TODO,
+The full documentation regarding how to use server 1 can be found in [this README](websocket_server/README.md#api),
 while for server 2 it can be found in [this README](api/README.md).
 
 ## Pre-trained models
@@ -28,6 +28,5 @@ at can be downloaded HERE TODO, together with their dictionaries and configurati
 
 ## Docker
 
-To ease the reproduction of the demo, we provide docker images ready to be used.
+To ease the reproduction of the demo, we provide a docker image ready to be used. Information on its installation and usage can be found in [this README](docker/README.md)
 
- TODO USAGE

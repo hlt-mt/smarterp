@@ -104,8 +104,6 @@ In details:
 python -u ./FBK_API_server.py HOSTNAME CMD.start_stServer.sh\|LANGUAGE_PAIR
 ```
 
-ENV VARIABLES
-
 
 ### Limitations
 
