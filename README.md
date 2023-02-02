@@ -20,10 +20,9 @@ while for server 2 it can be found in [this README](api/README.md).
 
 ## Pre-trained models
 
-The pre-trained models used in the two demo of the project are released under the same lisence of this repository
-at can be downloaded HERE TODO, together with their dictionaries and configuration files:
-
- TODO
+The pre-trained models used in the two demo of the project are released under the same licence of this repository
+at can be downloaded, together with their dictionaries and configuration files,
+at [this link](https://drive.google.com/file/d/1B9_k0SFWe448ZPeB_scSfCR1XvTbSsdL/view?usp=sharing).
 
 
 ## Docker
