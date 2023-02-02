@@ -36,12 +36,14 @@ that creates the directory "data" containing the sub-directories
 
 ## Usage
 
+### Environment variables
+
 Before starting the FBK ST demo component, two environment variables are
 to be set:
 
-1. FBK_ST_DATA_PATH : it must be assigned with the path of the
+1. FBK_ST_DATA_PATH (mandatory): it must be assigned with the path of the
 directory "data" extracted from the "st_data.tar.gz" archive
-(cfr. step 1.3)
+(cfr. step ./README.md#extract-the-st-model-data)
 For example, if the path of such directory is
 ```
 /home/ubuntu/smarterp/FBK/data
@@ -51,11 +53,17 @@ then the command to set the environment variable is
 $> export FBK_ST_DATA_PATH=/home/ubuntu/smarterp/FBK/data
 ```
 
-2. CREDENTIALS_PATH : it must be assigned with the path of the
+2. CREDENTIALS_PATH (mandatory) : it must be assigned with the path of the
 directory containing the two "ca.pem" (the certificate) and
 "privatekey.pem" (the private key) files, needed for the TLS secure
-WebSocket connection .
+WebSocket connection.
 
+A third environment variable LINKEDDATA_IP (optional) can be used to
+change the IP of the host running the NE linking service. The utilized
+default value is "3.121.98.219" .
+
+
+### Start
 
 At this point, the FBK demo component can be started with the script 
 ```bash
@@ -73,7 +81,7 @@ initialization phase: please wait...
 ```
 so Wait until the process prints the message
 ```bash
-ready websocket FBK API server LANGUAGE-PAIR at HOST:PORT'
+ready websocket FBK API server LANGUAGE-PAIR at HOST:PORT
 ```
 this means it is ready to accept connections and requests.
 
